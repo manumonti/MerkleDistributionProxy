@@ -30,7 +30,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        // forking is enabled only if MAINNET_RPC_ENDPOINT env is provided
+        // Forking is enabled only if MAINNET_RPC_ENDPOINT env is provided
         // RPC node must be an archive node (Alchemy recommended)
         enabled: !!process.env.MAINNET_RPC_ENDPOINT,
         url: process.env.MAINNET_RPC_ENDPOINT || "",
@@ -46,6 +46,9 @@ const config: HardhatUserConfig = {
     deployer: {
       default: 0, // take the first default hardhat account as deployer
       goerli: 0, // take the first account in networks.goerli.accounts
+    },
+    council: {
+      default: "0x9F6e831c8F8939DC0C830C6e492e7cEf4f9C2F5f",
     }
   },
   etherscan: {
