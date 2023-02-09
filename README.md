@@ -9,7 +9,10 @@
 
 2. Add a .env file with an RPC endpoint to an archive node (Alchemy recommended):
    ```
-   RPC_ENDPOINT=https://eth-mainnet.g.alchemy.com/v2/<API KEY>
+  MAINNET_RPC_ENDPOINT=https://eth-mainnet.g.alchemy.com/v2/<ALCHEMY_API_KEY>
+  GOERLI_RPC_ENDPOINT=https://eth-goerli.g.alchemy.com/v2/<ALCHEMY_API_KEY>
+  DEPLOYER_PRIVATE_KEY="<PRIVATE_KEY>"
+  ETHERSCAN_KEY="<ETHERSCAN_API_KEY>"
    ```
 
 3. Run the scripts

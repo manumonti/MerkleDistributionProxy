@@ -1,6 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import {config as dotEnvConfig} from "dotenv";
+import "hardhat-deploy";
 
 dotEnvConfig();
 
@@ -29,17 +30,23 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        // forking is enabled only if RPC_ENDPOINT env is provided
+        // forking is enabled only if MAINNET_RPC_ENDPOINT env is provided
         // RPC node must be an archive node (Alchemy recommended)
-        enabled: !!process.env.RPC_ENDPOINT,
-        url: process.env.RPC_ENDPOINT || "",
+        enabled: !!process.env.MAINNET_RPC_ENDPOINT,
+        url: process.env.MAINNET_RPC_ENDPOINT || "",
         blockNumber: 16582928,
       }
     },
     goerli: {
-      url: process.env.RPC_ENDPOINT || "",
+      url: process.env.GOERLI_RPC_ENDPOINT || "",
       accounts: [process.env.DEPLOYER_PRIVATE_KEY || ""],
     },
+  },
+  namedAccounts: {
+    deployer: {
+      default: 0, // take the first default hardhat account as deployer
+      goerli: 0, // take the first account in networks.goerli.accounts
+    }
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_KEY || "",
