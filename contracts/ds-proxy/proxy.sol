@@ -1,10 +1,24 @@
 // proxy.sol - execute actions atomically through the proxy's identity
 
-// SPDX-License-Identifier: GNU-3
-pragma solidity ^0.8.10;
+// Copyright (C) 2017  DappHub, LLC
 
-import "./auth.sol";
-import "./note.sol";
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+pragma solidity >=0.5.0 <0.6.0;
+
+import "./ds-auth/auth.sol";
+import "./ds-note/note.sol";
 
 // DSProxy
 // Allows code execution using a persistant identity This can be very
@@ -14,11 +28,12 @@ import "./note.sol";
 contract DSProxy is DSAuth, DSNote {
     DSProxyCache public cache;  // global cache for contracts
 
-    constructor(address _cacheAddr) {
+    constructor(address _cacheAddr) public {
         setCache(_cacheAddr);
     }
 
-    receive() external payable {}
+    function() external payable {
+    }
 
     // use the proxy to execute calldata _data on contract _code
     function execute(bytes memory _code, bytes memory _data)
@@ -46,8 +61,8 @@ contract DSProxy is DSAuth, DSNote {
 
         // call contract in current context
         assembly {
-            let succeeded := delegatecall(sub(gas(), 5000), _target, add(_data, 0x20), mload(_data), 0, 0)
-            let size := returndatasize()
+            let succeeded := delegatecall(sub(gas, 5000), _target, add(_data, 0x20), mload(_data), 0, 0)
+            let size := returndatasize
 
             response := mload(0x40)
             mstore(0x40, add(response, and(add(add(size, 0x20), 0x1f), not(0x1f))))
@@ -62,7 +77,7 @@ contract DSProxy is DSAuth, DSNote {
         }
     }
 
-    // set new cache
+    //set new cache
     function setCache(address _cacheAddr)
         public
         auth
@@ -83,7 +98,7 @@ contract DSProxyFactory {
     mapping(address=>bool) public isProxy;
     DSProxyCache public cache;
 
-    constructor() {
+    constructor() public {
         cache = new DSProxyCache();
     }
 
@@ -96,7 +111,7 @@ contract DSProxyFactory {
     // deploys a new proxy instance
     // sets custom owner of proxy
     function build(address owner) public returns (address payable proxy) {
-        proxy = payable(new DSProxy(address(cache)));
+        proxy = address(new DSProxy(address(cache)));
         emit Created(msg.sender, owner, address(proxy), address(cache));
         DSProxy(proxy).setOwner(owner);
         isProxy[proxy] = true;

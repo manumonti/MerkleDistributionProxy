@@ -5,7 +5,27 @@ import {config as dotEnvConfig} from "dotenv";
 dotEnvConfig();
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
+  solidity: {
+    compilers: [
+      {
+        version: "0.5.5"
+      },
+      {
+        version: "0.8.17"
+      }
+    ],
+    overrides: {
+      "contracts/ds-proxy/proxy.sol": {
+        version: "0.5.5",
+      },
+      "contracts/ds-proxy/ds-note/note.sol": {
+        version: "0.5.5",
+      },
+      "contracts/ds-proxy/ds-auth/auth.sol": {
+        version: "0.5.5",
+      },
+    },
+  },
   networks: {
     hardhat: {
       forking: {
