@@ -35,7 +35,14 @@ const config: HardhatUserConfig = {
         url: process.env.RPC_ENDPOINT || "",
         blockNumber: 16582928,
       }
-    }
+    },
+    goerli: {
+      url: process.env.RPC_ENDPOINT || "",
+      accounts: [process.env.DEPLOYER_PRIVATE_KEY || ""],
+    },
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_KEY || "",
   }
 };
 
