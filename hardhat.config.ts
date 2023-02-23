@@ -39,13 +39,18 @@ const config: HardhatUserConfig = {
     },
     goerli: {
       url: process.env.GOERLI_RPC_ENDPOINT || "",
-      accounts: [process.env.DEPLOYER_PRIVATE_KEY || ""],
+      accounts: [process.env.GOERLI_DEPLOYER_PRIV_KEY || ""],
     },
+    mainnet: {
+      url: process.env.MAINNET_RPC_ENDPOINT || "",
+      accounts: [process.env.MAINNET_DEPLOYER_PRIV_KEY || ""],
+    }
   },
   namedAccounts: {
     deployer: {
       default: 0, // take the first default hardhat account as deployer
       goerli: 0, // take the first account in networks.goerli.accounts
+      mainnet: 0, // take the first account in networks.mainnet.accounts
     },
     council: {
       default: "0x9F6e831c8F8939DC0C830C6e492e7cEf4f9C2F5f",
