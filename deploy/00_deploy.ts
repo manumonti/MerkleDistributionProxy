@@ -12,48 +12,78 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   log("Network:", hre.network.name, await getChainId());
   log("Deployer account: ", deployer);
 
-  // Deploy Proxy Factory
+
+  // Deploy ProxyFactory contract
   let proxyFactory = await deployments.getOrNull("DSProxyFactory");
 
   if (!proxyFactory) {
-    log("No Proxy Factory contract deployed. Deploying...");
+    log("No ProxyFactory contract deployed. Deploying...");
     proxyFactory = await deploy("DSProxyFactory", {
       from: deployer,
       log: true,
     });
   } else {
     log(
-      "Using Proxy Factory contract previously deployed:",
+      "Using ProxyFactory contract previously deployed:",
       proxyFactory.address
     );
   }
 
-  // Deploy Proxy and set council as owner
-  log("Deploying proxy using Proxy Factory...");
-  const txReceipt = await execute(
+
+  // Deploy ClaimableRewards proxy and set council as owner
+  log("Deploying ClaimableRewards proxy using ProxyFactory...");
+  const txReceiptClaimableRewards = await execute(
     "DSProxyFactory",
     { from: deployer, log: true },
     "build(address)",
     council
   );
 
-  if (!txReceipt.events) {
+  if (!txReceiptClaimableRewards.events) {
     log("Something went wrong. No event received.");
     return;
   }
 
-  const event = txReceipt.events.find(
+  const eventClaimableRewards = txReceiptClaimableRewards.events.find(
     (event) =>
       event.eventSignature === "Created(address,address,address,address)"
   );
 
-  if (!event.args) {
+  if (!eventClaimableRewards.args) {
     log("Something went wrong. No proxy address received");
     return;
   }
 
-  log("Proxy contract deployed:", event.args.proxy);
-  log("Proxy cache:", event.args.cache)
+  log("ClaimableRewards proxy deployed:", eventClaimableRewards.args.proxy);
+  log("ClaimableRewards proxy cache:", eventClaimableRewards.args.cache);
+
+
+  // Deploy FutureRewards proxy and set council as owner
+  log("Deploying FutureRewards proxy using ProxyFactory...");
+  const txReceiptFutureRewards = await execute(
+    "DSProxyFactory",
+    { from: deployer, log: true },
+    "build(address)",
+    council
+  );
+
+  if (!txReceiptFutureRewards.events) {
+    log("Something went wrong. No event received.");
+    return;
+  }
+
+  const eventFutureRewards = txReceiptFutureRewards.events.find(
+    (event) =>
+      event.eventSignature === "Created(address,address,address,address)"
+  );
+
+  if (!eventFutureRewards.args) {
+    log("Something went wrong. No proxy address received");
+    return;
+  }
+
+  log("FutureRewards proxy deployed:", eventFutureRewards.args.proxy);
+  log("FutureRewards proxy cache:", eventFutureRewards.args.cache);
 };
 
 export default func;
