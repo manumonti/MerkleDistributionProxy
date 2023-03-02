@@ -13,55 +13,14 @@ contract ProxyLogicV2 {
     address constant futureRewardsProxy =
         0xbe3e95Dc12C0aE3FAC264Bf63ef89Ec81139E3DF;
 
-    function transfer(
-        address token,
-        address to,
-        uint256 amount
-    ) external returns (bool) {
-        return IERC20(token).transfer(to, amount);
-    }
-
-    function approve(
-        address token,
-        address spender,
-        uint256 amount
-    ) external returns (bool) {
-        return IERC20(token).approve(spender, amount);
-    }
-
-    function transferFrom(
-        address token,
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool) {
-        return IERC20(token).transferFrom(from, to, amount);
-    }
-
-    function transferT(address to, uint256 amount) public returns (bool) {
-        return IERC20(T).transfer(to, amount);
-    }
-
-    function approveT(address spender, uint256 amount) public returns (bool) {
-        return IERC20(T).approve(spender, amount);
-    }
-
-    function transferTFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public returns (bool) {
-        return IERC20(T).transferFrom(from, to, amount);
-    }
-
-    function refillClaimableRewards(uint256 amount) external returns (bool) {
-        transferTFrom(futureRewardsProxy, claimableRewardsProxy, amount);
+    function topUpClaimableRewards(uint256 amount) external returns (bool) {
+        IERC20(T).transferFrom(futureRewardsProxy, claimableRewardsProxy, amount);
         uint256 allowance = IERC20(T).allowance(
             claimableRewardsProxy,
             merkleDistribution
         );
         uint256 newApproval = allowance + amount;
-        approveT(merkleDistribution, newApproval);
+        IERC20(T).approve(merkleDistribution, newApproval);
         return true;
     }
 }
